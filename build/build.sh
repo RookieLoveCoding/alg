@@ -12,7 +12,7 @@ if [ ! -d "../output/" ]; then
 fi
 
 cd ../output/
-# 清理历史编译中间件，保证每次编译都是全量编译
+# 清理残留，保证每次编译都是全量编译
 if [ -d "${chiptype}/" ]; then
     rm -rf ${chiptype}/
 fi
