@@ -18,6 +18,6 @@ if [ -d "${chiptype}/" ]; then
 fi
 mkdir -p ${chiptype}
 cd ${chiptype}
-cmake ../..
+cmake ../.. -DCHIP_TYPE=${chiptype}
 make
-./myapp
+make install
