@@ -1,11 +1,12 @@
-/* 版权声明 */
+/*
+ * 版权声明
+ * Description: API实现
+ * Author: liu
+ * Date: 2025.12.15
+ */
 
 #include <stdio.h>
 #include "hal_api.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 uint32_t halInit(void)
 {
@@ -13,7 +14,3 @@ uint32_t halInit(void)
 
     return 0;
 }
-
-#ifdef __cplusplus
-}
-#endif

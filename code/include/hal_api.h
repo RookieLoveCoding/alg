@@ -10,6 +10,13 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 uint32_t halInit(void);
 
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 #endif /* HAL_API_H */

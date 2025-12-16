@@ -5,7 +5,7 @@
  * Date: 2025.12.15
  */
 
-#ifdef ERRCODE_H
+#ifndef ERRCODE_H
 #define ERRCODE_H
 
 #define HAL_OK 0
