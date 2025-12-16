@@ -19,7 +19,7 @@ if(GoogleTest_FOUND)
 
     target_link_libraries(myapp PRIVATE
         GTest::gtest
-        GTest::gmock
+        GMock::gmock
     )
     target_include_directories(myapp PUBLIC
         ${GoogleTest_INCLUDE_DIRS}

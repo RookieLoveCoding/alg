@@ -72,7 +72,7 @@ if(GoogleTest_FOUND AND NOT TARGET GTest::gtest)
         ${GMOCK_MAIN_LIBRARY}
     )
     
-    # 创建导入目标（现代CMake方式）
+    # 创建导入目标
     add_library(GTest::gtest STATIC IMPORTED)
     set_target_properties(GTest::gtest PROPERTIES
         IMPORTED_LOCATION "${GTEST_LIBRARY}"
@@ -86,15 +86,15 @@ if(GoogleTest_FOUND AND NOT TARGET GTest::gtest)
         INTERFACE_LINK_LIBRARIES GTest::gtest
     )
     
-    add_library(GTest::gmock STATIC IMPORTED)
-    set_target_properties(GTest::gmock PROPERTIES
+    add_library(GMock::gmock STATIC IMPORTED)
+    set_target_properties(GMock::gmock PROPERTIES
         IMPORTED_LOCATION "${GMOCK_LIBRARY}"
         INTERFACE_INCLUDE_DIRECTORIES "${GMOCK_INCLUDE_DIR}"
         INTERFACE_LINK_LIBRARIES GTest::gtest
     )
     
-    add_library(GTest::gmock_main STATIC IMPORTED)
-    set_target_properties(GTest::gmock_main PROPERTIES
+    add_library(GMock::gmock_main STATIC IMPORTED)
+    set_target_properties(GMock::gmock_main PROPERTIES
         IMPORTED_LOCATION "${GMOCK_MAIN_LIBRARY}"
         INTERFACE_INCLUDE_DIRECTORIES "${GMOCK_INCLUDE_DIR}"
         INTERFACE_LINK_LIBRARIES GTest::gmock
