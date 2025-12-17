@@ -21,5 +21,5 @@ cp ${ROOT_PATH}/output/${chiptype}/release/lib/*.a ${ROOT_PATH}/test/build/${chi
 
 cd ${ROOT_PATH}/test/build/${chiptype}
 cmake ../.. -DCHIP_TYPE=${chiptype}
-make
+make -j16
 ./myapp

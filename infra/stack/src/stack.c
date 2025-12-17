@@ -3,35 +3,36 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "stack.h"
+#include "errcode.h"
 
 /* 使用数组的方式实现栈要比链表形式更方便定位问题 */
-int stackInit(Stack *stack, int stackSize)
+int32_t stackInit(Stack *stack, uint32_t stackSize)
 {
     if (stackSize == 0 || stack == NULL) {
-        return -1; /* TODO:这里应该返回规范的错误码 */
+        return HAL_INVALID_PARA;
     }
 
-    int *stackMem = (int *)malloc(stackSize * sizeof(int));
+    int32_t *stackMem = (int32_t *)malloc(stackSize * sizeof(int32_t));
     stack->stackMemory = stackMem;
     stack->stackMaxSize = stackSize;
     stack->top = -1;
 
-    return 0;
+    return HAL_OK;
 }
 
-int stackPush(Stack *stack, int member)
+int32_t stackPush(Stack *stack, int32_t member)
 {
     if (stack == NULL || (stack->top + 1) >= stack->stackMaxSize) {
-        return -1;
+        return HAL_INVALID_PARA;
     }
 
     stack->stackMemory[stack->top + 1] = member;
     stack->top++;
 
-    return 0;
+    return HAL_OK;
 }
 
-int stackPop(Stack *stack, int *value)
+int32_t stackPop(Stack *stack, int32_t *value)
 {
     if (stack == NULL || stack->top == -1) {
         return -1;
@@ -40,7 +41,7 @@ int stackPop(Stack *stack, int *value)
     *value = stack->stackMemory[stack->top];
     stack->top--;
 
-    return 0;
+    return HAL_OK;
 }
 
 void stackDestory(Stack *stack)
@@ -50,4 +51,6 @@ void stackDestory(Stack *stack)
     }
 
     (void)free(stack->stackMemory);
+    stack->top = -1;
+    stack->stackMaxSize = 0;
 }

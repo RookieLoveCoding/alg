@@ -19,5 +19,5 @@ fi
 mkdir -p ${chiptype}
 cd ${chiptype}
 cmake ../.. -DCHIP_TYPE=${chiptype}
-make
+make -j16
 make install

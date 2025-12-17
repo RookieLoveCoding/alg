@@ -2,7 +2,7 @@ add_library(hal_api STATIC
     src/hal_api.c
 )
 
-target_link_libraries(hal_api PRIVATE
+target_link_libraries(hal_api PUBLIC
     stack
 )
 target_include_directories(hal_api PUBLIC

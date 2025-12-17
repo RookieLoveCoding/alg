@@ -10,14 +10,14 @@ extern "C" {
 #endif
 
 typedef struct {
-    int *stackMemory;
-    int stackMaxSize;
-    int top;
+    int32_t *stackMemory;
+    uint32_t stackMaxSize;
+    int32_t top;
 } Stack;
 
-int stackInit(Stack *stack, int stackSize);
-int stackPush(Stack *stack, int member);
-int stackPop(Stack *stack, int *value);
+int32_t stackInit(Stack *stack, uint32_t stackSize);
+int32_t stackPush(Stack *stack, int32_t member);
+int32_t stackPop(Stack *stack, int32_t *value);
 void stackDestory(Stack *stack);
 
 #ifdef __cplusplus

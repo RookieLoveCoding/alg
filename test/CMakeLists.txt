@@ -1,9 +1,15 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(MyApp)
 
-add_executable(myapp common/main.c)
-target_link_libraries(myapp PRIVATE
-    ${CMAKE_SOURCE_DIR}/build/${CHIP_TYPE}/libhal_api.a
+# 使能测试
+enable_testing()
+
+set(TEST_FILES
+    ${CMAKE_SOURCE_DIR}/testcase/infra/infra_test.cpp
+)
+add_executable(myapp common/main.cpp ${TEST_FILES})
+target_link_libraries(myapp PUBLIC
+    ${CMAKE_SOURCE_DIR}/build/${CHIP_TYPE}/libhal.a
 )
 target_include_directories(myapp PUBLIC
     ${CMAKE_SOURCE_DIR}/../code/include
@@ -17,7 +23,7 @@ if(GoogleTest_FOUND)
     message(STATUS "Found GoogleTest: ${GoogleTest_INCLUDE_DIRS}")
     message(STATUS "Found Libraries: ${GoogleTest_LIBRARIES}")
 
-    target_link_libraries(myapp PRIVATE
+    target_link_libraries(myapp PUBLIC
         GTest::gtest
         GMock::gmock
     )

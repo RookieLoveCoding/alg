@@ -4,4 +4,5 @@ add_library(stack STATIC
 
 target_include_directories(stack PUBLIC
     include/
+    ${ROOT_PATH}/code/include
 )
