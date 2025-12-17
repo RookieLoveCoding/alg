@@ -50,7 +50,8 @@ void stackDestory(Stack *stack)
         return;
     }
 
-    (void)free(stack->stackMemory);
+    free(stack->stackMemory);
+    stack->stackMemory = NULL;
     stack->top = -1;
     stack->stackMaxSize = 0;
 }
