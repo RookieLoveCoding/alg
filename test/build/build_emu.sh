@@ -1,8 +1,12 @@
 #!/bin/bash
 
 chiptype=$1
-buildtype="x86"
-ROOT_PATH=".${pwd}/../.."
+buildtype="emu"
+# 获取脚本所在目录的绝对路径
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# 设置根目录为脚本目录的上两级
+ROOT_PATH="$(dirname "$(dirname "${SCRIPT_DIR}")")"
+
 if [ "${chiptype}" != "arm32" ] && [ "${chiptype}" != "arm64" ]; then
     echo "only sh build_emu.sh arm32/arm64 supported"
     exit 0
@@ -16,7 +20,7 @@ cd ${chiptype}
 rm -rf *
 
 cd ${ROOT_PATH}/build
-sh build.sh ${chiptype}
+sh build.sh ${chiptype} ${buildtype}
 cp ${ROOT_PATH}/output/${chiptype}/release/lib/*.a ${ROOT_PATH}/test/build/${chiptype}
 
 cd ${ROOT_PATH}/test/build/${chiptype}

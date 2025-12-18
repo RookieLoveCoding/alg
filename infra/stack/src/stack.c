@@ -35,7 +35,7 @@ int32_t stackPush(Stack *stack, int32_t member)
 int32_t stackPop(Stack *stack, int32_t *value)
 {
     if (stack == NULL || stack->top == -1) {
-        return -1;
+        return HAL_INVALID_PARA;
     }
 
     *value = stack->stackMemory[stack->top];

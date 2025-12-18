@@ -10,6 +10,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# 设置增量编译
+option(ENABLE_INCR_COMPILE "Enable incremental compilation" ON)
+
 # 设置一些关键变量
 set(ROOT_PATH "${CMAKE_SOURCE_DIR}" CACHE STRING "the root path of project")
 

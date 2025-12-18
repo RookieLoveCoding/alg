@@ -21,7 +21,7 @@ class StackTest : public ::testing::Test {
         static Stack *myStack;
         int32_t ret;
 };
-Stack *StackTest::myStack = nullptr;
+Stack* StackTest::myStack = nullptr; /* 静态成员变量需要在类内声明，类外定义 */
 
 TEST_F(StackTest, WHEN_init_stack_SHOULD_return_OK)
 {
@@ -43,6 +43,9 @@ TEST_F(StackTest, WHEN_push_pop_SHOULD_return_OK)
     ret = stackPop(myStack, &popNum);
     EXPECT_EQ(ret, HAL_OK);
     EXPECT_EQ(popNum, -5);
+
+    ret = stackPop(myStack, &popNum);
+    EXPECT_EQ(ret, HAL_INVALID_PARA);
 }
 
 TEST_F(StackTest, WHEN_destroy_stack_SHOULD_return_OK)
