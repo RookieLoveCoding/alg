@@ -2,32 +2,51 @@
 #include "stack.h"
 #include "errcode.h"
 
-class InfraTest : public ::testing::Test {
-    void SetUp() override {};
-    void TearDown() override {};
-};
+class StackTest : public ::testing::Test {
+    public:
+        static void SetUpTestSuite()
+        {
+            myStack = new Stack;
+        }
 
-Stack *g_newStack = (Stack *)malloc(sizeof(Stack));
-TEST_F(InfraTest, WHEN_init_stack_SHOULD_return_OK)
+        static void TearDownTestSuite()
+        {
+            delete myStack;
+            myStack = nullptr;
+        }
+
+        void SetUp() override {};
+        void TearDown() override {};
+
+        static Stack *myStack;
+        int32_t ret;
+};
+Stack *StackTest::myStack = nullptr;
+
+TEST_F(StackTest, WHEN_init_stack_SHOULD_return_OK)
 {
     uint32_t stackSize = 5;
-    int32_t ret = stackInit(g_newStack, stackSize);
+    ret = stackInit(myStack, stackSize);
     EXPECT_EQ(ret, HAL_OK);
+}
 
-    ret = stackPush(g_newStack, -5);
+TEST_F(StackTest, WHEN_push_pop_SHOULD_return_OK)
+{
+    ret = stackPush(myStack, -5);
     EXPECT_EQ(ret, HAL_OK);
-    ret = stackPush(g_newStack, 10);
+    ret = stackPush(myStack, 10);
     EXPECT_EQ(ret, HAL_OK);
     int32_t popNum = 0;
-    ret = stackPop(g_newStack, &popNum);
+    ret = stackPop(myStack, &popNum);
     EXPECT_EQ(ret, HAL_OK);
     EXPECT_EQ(popNum, 10);
-    ret = stackPop(g_newStack, &popNum);
+    ret = stackPop(myStack, &popNum);
     EXPECT_EQ(ret, HAL_OK);
     EXPECT_EQ(popNum, -5);
+}
 
-    stackDestory(g_newStack);
-    EXPECT_EQ(g_newStack->stackMaxSize, 0);
-
-    free(g_newStack);
+TEST_F(StackTest, WHEN_destroy_stack_SHOULD_return_OK)
+{
+    stackDestory(myStack);
+    EXPECT_EQ(myStack->stackMaxSize, 0);
 }
