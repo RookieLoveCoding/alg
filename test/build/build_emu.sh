@@ -3,7 +3,7 @@
 chiptype=$1
 buildtype="emu"
 # 获取脚本所在目录的绝对路径
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 # 设置根目录为脚本目录的上两级
 ROOT_PATH="$(dirname "$(dirname "${SCRIPT_DIR}")")"
 

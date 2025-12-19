@@ -9,7 +9,7 @@ if [ "${chiptype}" != "arm32" ] && [ "${chiptype}" != "arm64" ]; then
 fi
 
 # 获取脚本所在目录的绝对路径
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 ROOT_PATH="$(dirname "${SCRIPT_DIR}")"
 
 # output/目录存放编译中间产物和日志等
@@ -27,7 +27,7 @@ cd ${chiptype}
 if [ "${buildtype}" != "" ]; then
     cmake ../.. -DCHIP_TYPE=${chiptype}
 else
-    if [ "${chiptype}" == "arm32" ]; then
+    if [ "${chiptype}" = "arm32" ]; then
         cmake ../.. -DCHIP_TYPE=${chiptype} -DCMAKE_TOOLCHAIN_FILE=${ROOT_PATH}/cmake/arm-linux-gnueabihf.cmake
     else
         cmake ../.. -DCHIP_TYPE=${chiptype} -DCMAKE_TOOLCHAIN_FILE=${ROOT_PATH}/cmake/aarch64-linux-gnu-gcc.cmake

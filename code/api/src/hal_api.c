@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "hal_api.h"
+#include "stack.h"
 
 uint32_t halInit(void)
 {
