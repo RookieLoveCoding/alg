@@ -19,11 +19,13 @@ set(ROOT_PATH "${CMAKE_SOURCE_DIR}" CACHE STRING "the root path of project")
 # 添加子目录
 add_subdirectory(code)
 add_subdirectory(infra)
+add_subdirectory(log)
 
 # 合并库文件，统一对外发布
 add_library(hal STATIC
     $<TARGET_OBJECTS:hal_api>
     $<TARGET_OBJECTS:stack>
+    $<TARGET_OBJECTS:log>
 )
 
 # 对外发布二进制和头文件

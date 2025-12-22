@@ -4,6 +4,7 @@ add_library(hal_api STATIC
 
 target_link_libraries(hal_api PUBLIC
     stack
+    log
 )
 target_include_directories(hal_api PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/
