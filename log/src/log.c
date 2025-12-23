@@ -15,6 +15,7 @@
 /* @note 日志名和组件名保持一致，禁止随意改动 */
 static LogModule logModule[] = { HAL, FOS, NSE };
 static const char* logName[] = { "hal.log", "fos.log", "nse.log" };
+static char *logLevelName[] = { "DEBUG", "INFO", "WARNING", "ERROR", "FATAL" };
 /* @note 把作用域限制在本文件，外部只能通过开放出的接口去访问和修改 */
 static LogConfig* g_logConfig = NULL;
 
@@ -141,8 +142,8 @@ void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, 
     }
 
     pthread_mutex_lock(&config->mutex.mutex);
-    int32_t len = snprintf(config->buffer, sizeof(config->buffer), "[%s]%s:%d ",
-                           logGetTime(), logGetBaseName(file), line);
+    int32_t len = snprintf(config->buffer, sizeof(config->buffer), "[%s][%s]%s:%d ",
+                           logGetTime(), logLevelName[level], logGetBaseName(file), line);
     va_list args;
     va_start(args, format);
     vsnprintf(config->buffer + len, sizeof(config->buffer), format, args);
