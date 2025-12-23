@@ -8,7 +8,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #include "log.h"
 #include "errcode.h"
 
@@ -25,13 +25,15 @@ static LogConfig* g_logConfig = NULL;
  */
 uint32_t logInit(LogLevel logLevel, uint32_t maxByteSize, bool rotate)
 {
-    g_logConfig = (LogConfig *)malloc(sizeof(LogConfig) * MODULE_MAX);
+    if (g_logConfig == NULL) {
+        g_logConfig = (LogConfig *)malloc(sizeof(LogConfig) * MODULE_MAX);
+    }
 
     for (uint32_t i = 0; i < MODULE_MAX; i++) {
         /* 如果日志文件不存在会创建 */
         FILE *file = fopen(logName[i], "a");
         if (file == NULL) {
-            /* TODO:这里要释放前面已经申请到的资源 */
+            logDestroy(); /* 释放已申请到的资源，避免泄露 */
             return HAL_OUT_OF_MEMORY;
         }
 
@@ -41,8 +43,9 @@ uint32_t logInit(LogLevel logLevel, uint32_t maxByteSize, bool rotate)
         g_logConfig[i].logLevel = logLevel;
         g_logConfig[i].maxByteSize = maxByteSize;
         g_logConfig[i].rotate = rotate;
-        g_logConfig[i].consoleOutput = false; /* 屏幕打印默认关闭 */
-        pthread_mutex_init(&g_logConfig[i].mutex, NULL);
+        g_logConfig[i].consoleOutput = true; /* 屏幕打印默认开启 */
+        pthread_mutex_init(&g_logConfig[i].mutex.mutex, NULL);
+        g_logConfig[i].mutex.isInited = true;
 
         fprintf(file, "=== Log initialized at %ld ===\n", (long)time(NULL));
         fflush(file);
@@ -51,12 +54,24 @@ uint32_t logInit(LogLevel logLevel, uint32_t maxByteSize, bool rotate)
     return HAL_OK;
 }
 
+/* @brief 日志去初始化 */
 void logDestroy()
 {
+    if (g_logConfig == NULL) {
+        return;
+    }
+
     for (uint32_t i = 0; i < MODULE_MAX; i++) {
-        pthread_mutex_destroy(&g_logConfig[i].mutex);
+        if (g_logConfig[i].file != NULL) {
+            fclose(g_logConfig[i].file);
+        }
+        if (g_logConfig[i].mutex.isInited) {
+            pthread_mutex_destroy(&g_logConfig[i].mutex.mutex);
+            g_logConfig[i].mutex.isInited = false;
+        }
     }
     free(g_logConfig);
+    g_logConfig = NULL;
 }
 
 void logSetLevel(LogModule module, LogLevel level)
@@ -65,9 +80,9 @@ void logSetLevel(LogModule module, LogLevel level)
         return;
     }
 
-    pthread_mutex_lock(&g_logConfig[module].mutex);
+    pthread_mutex_lock(&g_logConfig[module].mutex.mutex);
     g_logConfig[module].logLevel = level;
-    pthread_mutex_unlock(&g_logConfig[module].mutex);
+    pthread_mutex_unlock(&g_logConfig[module].mutex.mutex);
 }
 
 void logSetOutput(LogModule module, bool consoleOutput)
@@ -76,9 +91,9 @@ void logSetOutput(LogModule module, bool consoleOutput)
         return;
     }
 
-    pthread_mutex_lock(&g_logConfig[module].mutex);
+    pthread_mutex_lock(&g_logConfig[module].mutex.mutex);
     g_logConfig[module].consoleOutput = consoleOutput;
-    pthread_mutex_unlock(&g_logConfig[module].mutex);
+    pthread_mutex_unlock(&g_logConfig[module].mutex.mutex);
 }
 
 void logSetRotate(LogModule module, bool rotate)
@@ -87,11 +102,37 @@ void logSetRotate(LogModule module, bool rotate)
         return;
     }
 
-    pthread_mutex_lock(&g_logConfig[module].mutex);
+    pthread_mutex_lock(&g_logConfig[module].mutex.mutex);
     g_logConfig[module].rotate = rotate;
-    pthread_mutex_unlock(&g_logConfig[module].mutex);
+    pthread_mutex_unlock(&g_logConfig[module].mutex.mutex);
 }
 
+/* @brief 去掉路径，只保留文件名，以节省日志文件空间 */
+const char *logGetBaseName(const char *path)
+{
+    const char *baseName = strrchr(path, '/'); /* 从右向左寻找第一个'/' */
+    if (baseName != NULL) {
+        return baseName + 1; /* 这里可以把文件名的部分字符替换为*，以提高系统安全性 */
+    }
+
+    return path;
+}
+
+/* @brief 获取系统时间，精确到毫秒 */
+char *logGetTime()
+{
+    static char timeStr[64];
+    struct timeval tv;
+    time_t now = time(NULL);
+    gettimeofday(&tv, NULL);
+    struct tm *tmInfo = localtime(&now);
+    size_t len = strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", tmInfo);
+    snprintf(timeStr + len, sizeof(timeStr) - len, ":%ld", tv.tv_usec / 1000); /* 纳秒转毫秒 */
+
+    return timeStr;
+}
+
+/* @brief 日志写入 */
 void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, const char *format, ...)
 {
     LogConfig *config = &g_logConfig[module];
@@ -99,8 +140,9 @@ void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, 
         return; /* 等级低的日志不打印 */
     }
 
-    pthread_mutex_lock(&config->mutex);
-    int32_t len = snprintf(config->buffer, sizeof(config->buffer), "%s:%d ", file, line);
+    pthread_mutex_lock(&config->mutex.mutex);
+    int32_t len = snprintf(config->buffer, sizeof(config->buffer), "[%s]%s:%d ",
+                           logGetTime(), logGetBaseName(file), line);
     va_list args;
     va_start(args, format);
     vsnprintf(config->buffer + len, sizeof(config->buffer), format, args);
@@ -108,8 +150,12 @@ void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, 
 
     fprintf(config->file, "%s\n", config->buffer);
     fflush(config->file);
+
+    if (config->consoleOutput) {
+        printf("%s\n", config->buffer);
+    }
     /* 清空buffer */
     memset(config->buffer, '\0', sizeof(config->buffer));
 
-    pthread_mutex_unlock(&config->mutex);
+    pthread_mutex_unlock(&config->mutex.mutex);
 }
