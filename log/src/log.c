@@ -75,6 +75,7 @@ void logDestroy()
     g_logConfig = NULL;
 }
 
+/* @brief 设置日志等级 */
 void logSetLevel(LogModule module, LogLevel level)
 {
     if (module == MODULE_MAX) {
@@ -86,6 +87,7 @@ void logSetLevel(LogModule module, LogLevel level)
     pthread_mutex_unlock(&g_logConfig[module].mutex.mutex);
 }
 
+/* @brief 设置日志是否屏幕输出 */
 void logSetOutput(LogModule module, bool consoleOutput)
 {
     if (module == MODULE_MAX) {
@@ -97,6 +99,7 @@ void logSetOutput(LogModule module, bool consoleOutput)
     pthread_mutex_unlock(&g_logConfig[module].mutex.mutex);
 }
 
+/* @brief 设置日志是否循环覆盖 */
 void logSetRotate(LogModule module, bool rotate)
 {
     if (module == MODULE_MAX) {
@@ -133,6 +136,16 @@ char *logGetTime()
     return timeStr;
 }
 
+/* @brief 检查日志是否写满，如果满了则循环覆盖 */
+void logCheckRotate(LogConfig *config)
+{
+    /* 获取当前文件指针相较于起始位置的偏移字节数 */
+    long fileSize = ftell(config->file);
+    if (fileSize > config->maxByteSize) {
+        rewind(config->file);
+    }
+}
+
 /* @brief 日志写入 */
 void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, const char *format, ...)
 {
@@ -142,6 +155,7 @@ void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, 
     }
 
     pthread_mutex_lock(&config->mutex.mutex);
+    logCheckRotate(config);
     int32_t len = snprintf(config->buffer, sizeof(config->buffer), "[%s][%s]%s:%d ",
                            logGetTime(), logLevelName[level], logGetBaseName(file), line);
     va_list args;
