@@ -75,6 +75,15 @@ void logDestroy()
     g_logConfig = NULL;
 }
 
+LogConfig *logGetConfig(LogModule module)
+{
+    if (g_logConfig == NULL || module == MODULE_MAX) {
+        return NULL;
+    }
+
+    return &g_logConfig[module];
+}
+
 /* @brief 设置日志等级 */
 void logSetLevel(LogModule module, LogLevel level)
 {
@@ -141,8 +150,8 @@ void logCheckRotate(LogConfig *config)
 {
     /* 获取当前文件指针相较于起始位置的偏移字节数 */
     long fileSize = ftell(config->file);
-    if (fileSize > config->maxByteSize) {
-        rewind(config->file);
+    if (config->rotate && fileSize > config->maxByteSize) {
+        rewind(config->file); /* 将文件指针位置切回文件起始位置 */
     }
 }
 
@@ -163,7 +172,7 @@ void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, 
     vsnprintf(config->buffer + len, sizeof(config->buffer), format, args);
     va_end(args);
 
-    fprintf(config->file, "%s\n", config->buffer);
+    fprintf(config->file, "%s", config->buffer);
     fflush(config->file);
 
     if (config->consoleOutput) {

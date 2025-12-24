@@ -55,6 +55,7 @@ typedef struct {
 
 uint32_t logInit(LogLevel logLevel, uint32_t maxByteSize, bool rotate);
 void logDestroy();
+LogConfig *logGetConfig(LogModule module);
 void logSetLevel(LogModule module, LogLevel logLevel);
 void logSetOutput(LogModule module, bool consoleOutput);
 void logSetRotate(LogModule module, bool rotate);

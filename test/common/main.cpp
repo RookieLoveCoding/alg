@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 
     uint32_t ret = halInit();
     if (ret != HAL_OK) {
-        return -1;
+        return HAL_INIT_FAIL;
     }
 
     return RUN_ALL_TESTS();

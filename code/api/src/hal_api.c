@@ -19,7 +19,8 @@ uint32_t halInit(void)
         return ret;
     }
     HAL_LOG_INFO("log init success\n");
-    printf("hal init finish\n");
+
+    HAL_LOG_INFO("hal init finish\n");
 
     return HAL_OK;
 }
