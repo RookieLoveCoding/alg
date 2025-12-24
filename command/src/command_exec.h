@@ -1,0 +1,31 @@
+/*
+ * 版权声明
+ * @brief: 命令执行函数相关声明和结构
+ * @author: liu
+ * @date: 2025.12.24
+ */
+
+#ifndef COMMAND_EXEC_H
+#define COMMAND_EXEC_H
+
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define CMD_DATANUM_MAX 8
+
+typedef struct {
+    double data[CMD_DATANUM_MAX];
+    uint32_t inputDataNum;
+} CmdInput;
+
+typedef uint32_t (*CmdExec)(CmdInput *input);
+uint32_t halGetVersion(CmdInput *input);
+uint32_t halDefaultExec(CmdInput *input)
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+#endif /* COMMAND_EXEC_H */
