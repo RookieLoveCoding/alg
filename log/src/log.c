@@ -176,7 +176,7 @@ void logWrite(LogModule module, LogLevel level, const char *file, int32_t line, 
     fflush(config->file);
 
     if (config->consoleOutput) {
-        printf("%s\n", config->buffer);
+        printf("%s", config->buffer);
     }
     /* 清空buffer */
     memset(config->buffer, '\0', sizeof(config->buffer));

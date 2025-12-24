@@ -1,6 +1,7 @@
 #!/bin/bash
 
 chiptype=$1
+runmode=$2
 buildtype="emu"
 # 获取脚本所在目录的绝对路径
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
@@ -8,7 +9,7 @@ SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 ROOT_PATH="$(dirname "$(dirname "${SCRIPT_DIR}")")"
 
 if [ "${chiptype}" != "arm32" ] && [ "${chiptype}" != "arm64" ]; then
-    echo "only sh build_emu.sh arm32/arm64 supported"
+    echo "only sh build_emu.sh arm32/arm64 [cmd] supported"
     exit 0
 fi
 
@@ -26,4 +27,4 @@ cp ${ROOT_PATH}/output/${chiptype}/release/lib/*.a ${ROOT_PATH}/test/build/${chi
 cd ${ROOT_PATH}/test/build/${chiptype}
 cmake ../.. -DCHIP_TYPE=${chiptype}
 make -j16
-./myapp
+./myapp ${runmode}

@@ -10,6 +10,7 @@
 #include "stack.h"
 #include "errcode.h"
 #include "log.h"
+#include "version.h"
 
 uint32_t halInit(void)
 {
@@ -21,6 +22,8 @@ uint32_t halInit(void)
     HAL_LOG_INFO("log init success\n");
 
     HAL_LOG_INFO("hal init finish\n");
+    HAL_LOG_DEBUG("Current Version : %s\n", getVersion());
+    HAL_LOG_DEBUG("Build Time : %s\n", getDate());
 
     return HAL_OK;
 }

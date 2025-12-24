@@ -26,6 +26,7 @@ add_library(hal STATIC
     $<TARGET_OBJECTS:hal_api>
     $<TARGET_OBJECTS:stack>
     $<TARGET_OBJECTS:log>
+    $<TARGET_OBJECTS:version>
 )
 
 # 对外发布二进制和头文件
