@@ -8,7 +8,9 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "command_tree.h"
+#include "errcode.h"
 
 /* @brief 命令行解析函数 */
 uint32_t cmdParse(char *usrInput)
@@ -16,7 +18,6 @@ uint32_t cmdParse(char *usrInput)
     CmdNode *root = cmdGetRootNode();
     CmdNode *formerRoot = NULL;
     CmdInput input = { 0 };
-    uint32_t usrInputIdx = 0;
     char *token = strtok(usrInput, " ");
 
     while (token != NULL) {
@@ -43,5 +44,12 @@ uint32_t cmdParse(char *usrInput)
         }
     }
 
-    return root->exec == NULL ? cmdDefaultExec(&input) : root->exec(&input);
+    /* 如果命令行没有敲完就回车，则提示下面的子节点信息 */
+    if (root->exec == NULL) {
+        for (uint32_t i = 0; i < root->childNum; i++) {
+            printf("%s %s\n", root->child[i].nodeName, root->child[i].desc);
+        }
+        return HAL_OK;
+    }
+    return root->exec(&input);
 }

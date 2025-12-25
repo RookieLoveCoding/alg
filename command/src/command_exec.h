@@ -24,6 +24,10 @@ typedef struct {
 typedef uint32_t (*CmdExec)(CmdInput *input);
 uint32_t cmdGetVersion(CmdInput *input);
 uint32_t cmdDefaultExec(CmdInput *input);
+uint32_t cmdHalSetLogLevel(CmdInput *input);
+uint32_t cmdHalSetLogOutput(CmdInput *input);
+uint32_t cmdHalSetLogRotate(CmdInput *input);
+uint32_t cmdGetHalLogConfig(CmdInput *input);
 
 #ifdef __cplusplus
 }
