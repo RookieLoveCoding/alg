@@ -17,13 +17,13 @@ extern "C" {
 #define CMD_DATANUM_MAX 8
 
 typedef struct {
-    double data[CMD_DATANUM_MAX];
-    uint32_t inputDataNum;
+    double data[CMD_DATANUM_MAX]; /**< 用户输入的数据参数 */
+    uint32_t inputDataNum; /**< 用户输入的数据参数个数 */
 } CmdInput;
 
 typedef uint32_t (*CmdExec)(CmdInput *input);
-uint32_t halGetVersion(CmdInput *input);
-uint32_t halDefaultExec(CmdInput *input)
+uint32_t cmdGetVersion(CmdInput *input);
+uint32_t cmdDefaultExec(CmdInput *input);
 
 #ifdef __cplusplus
 }

@@ -8,6 +8,6 @@ target_link_libraries(hal_api PUBLIC
     version
 )
 target_include_directories(hal_api PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/../include/
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    include
+    ${ROOT_PATH}/code/include
 )

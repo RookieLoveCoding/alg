@@ -5,19 +5,20 @@
  * @date: 2025.12.24
  */
 
+#include <stdio.h>
 #include "command_exec.h"
 #include "version.h"
 #include "errcode.h"
 
-uint32_t halGetVersion(CmdInput *input)
+uint32_t cmdGetVersion(CmdInput *input)
 {
     printf("Current Version : %s\n", getVersion());
-    printf("Version Date : $s\n", getDate());
+    printf("Version Date : %s\n", getDate());
 
     return HAL_OK;
 }
 
-uint32_t halDefaultExec(CmdInput *input)
+uint32_t cmdDefaultExec(CmdInput *input)
 {
     printf("this command is not support now\n");
 

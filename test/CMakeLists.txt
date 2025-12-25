@@ -18,6 +18,7 @@ target_link_libraries(myapp PUBLIC
 target_include_directories(myapp PUBLIC
     ${CMAKE_SOURCE_DIR}/../code/include
     ${CMAKE_SOURCE_DIR}/../infra/stack/include
+    ${CMAKE_SOURCE_DIR}/../command/include
 )
 
 set(GOOGLETEST_ROOT ${CMAKE_SOURCE_DIR}/../third_party/googletest)

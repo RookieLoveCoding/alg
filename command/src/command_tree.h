@@ -22,13 +22,18 @@ typedef enum {
     DOUBLE /**< 浮点型，一般是业务数据 */
 } CmdNodeType;
 
+typedef struct CmdNode CmdNode;
 /* @brief 节点 */
-typedef struct {
-    CmdNodeType nodeType;
-    char *nodeName;
-    CmdNode *child;
-    CmdExec exec;
-} CmdNode;
+struct CmdNode {
+    CmdNodeType nodeType; /**< 节点类型 */
+    char *nodeName; /**< 节点名称，只有当节点类型是STRING时才使用 */
+    char *desc; /**< 节点描述信息 */
+    uint32_t childNum; /**< 节点孩子数量 */
+    CmdNode *child; /**< 节点孩子 */
+    CmdExec exec; /**< 节点执行函数 */
+};
+
+CmdNode *cmdGetRootNode();
 
 #ifdef __cplusplus
 }
