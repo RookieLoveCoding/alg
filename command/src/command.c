@@ -36,6 +36,7 @@ uint32_t cmdParse(char *usrInput)
                 root = &root->child[i];
                 break;
             } else {
+                /* 无论是什么类型的数据，都先统一转成double */
                 input.data[input.inputDataNum++] = strtod(token, NULL);
                 token = strtok(NULL, " ");
                 root = &root->child[i];
@@ -47,9 +48,10 @@ uint32_t cmdParse(char *usrInput)
     /* 如果命令行没有敲完就回车，则提示下面的子节点信息 */
     if (root->exec == NULL) {
         for (uint32_t i = 0; i < root->childNum; i++) {
-            printf("%s %s\n", root->child[i].nodeName, root->child[i].desc);
+            printf("%s    %s\n", root->child[i].nodeName, root->child[i].desc);
         }
         return HAL_OK;
     }
+
     return root->exec(&input);
 }

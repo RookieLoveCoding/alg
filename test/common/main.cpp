@@ -28,7 +28,7 @@ int main(int argc, char **argv)
         if (input[0] == '\n') {
             continue;
         }
-        input[strcspn(input, "\n")] = 0;
+        input[strcspn(input, "\n")] = 0; /* 把换行替换成字符串结束符 */
         cmdParse(input);
     }
     
